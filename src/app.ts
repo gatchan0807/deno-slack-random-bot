@@ -14,7 +14,7 @@ app.event("message", async ({ event, say }) => {
 // Event Subscriptionsの項でRequest URLの設定が一向にVerifyしないので一旦エラーを握りつぶす
 app.error(async (error) => {
   console.error(error);
-  return await void 0;
+  return await void 0; // 型情報合わせのためのPromise<void>
 });
 
 await app.start({ port: 3000 });
