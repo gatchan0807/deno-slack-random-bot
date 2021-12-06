@@ -11,5 +11,11 @@ app.event("message", async ({ event, say }) => {
   await say("pong");
 });
 
+// Event Subscriptionsの項でRequest URLの設定が一向にVerifyしないので一旦エラーを握りつぶす
+app.error(async (error) => {
+  console.error(error);
+  return await void 0;
+});
+
 await app.start({ port: 3000 });
 console.log("🦕 ⚡️");
