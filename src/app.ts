@@ -74,5 +74,5 @@ app.error(async (error) => {
   return await void 0; // 型情報合わせのためのPromise<void>
 });
 
-await app.start({ port: 3000 });
+await app.start({ port: 3001 });
 console.log("🦕 ⚡️");
