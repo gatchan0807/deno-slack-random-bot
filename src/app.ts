@@ -1,5 +1,5 @@
-import "https://deno.land/x/dotenv@v2.0.0/load.ts";
-import { App } from "https://deno.land/x/slack_bolt@1.0.0/mod.ts";
+import "dotenv/load.ts";
+import { App } from "slack_bolt/mod.ts";
 
 import { SubCommandPattern } from "./subcommands.ts";
 

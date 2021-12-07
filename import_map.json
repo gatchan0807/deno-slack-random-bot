@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "dotenv/": "https://deno.land/x/dotenv@v2.0.0/",
+    "slack_bolt/": "https://deno.land/x/slack_bolt@1.0.0/"
+  }
+}
