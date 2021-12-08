@@ -1,6 +1,14 @@
 import "dotenv/load.ts";
 import { App } from "slack_bolt/mod.ts";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  DocumentData,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
 import { SubCommandPattern } from "./subcommands.ts";
 import { db } from "./firestore.ts";
@@ -32,7 +40,7 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   const groupsRef = collection(db, "groups");
 
   const q = query(
-    collection(db, "groups"),
+    groupsRef,
     where("groupName", "==", groupName),
   );
 
@@ -45,7 +53,7 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   });
 
   if (result.length !== 0) {
-    console.info(`[INFO] The specified already exists group name.`);
+    console.info(`[INFO] The specified group name already exists.`);
     await say(`<@${user}> ごめんなさい！【${groupName}】はすでに存在します。別のグループ名を設定してください🙇`);
     return;
   }
@@ -62,6 +70,48 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   );
 
   await say(`<@${user}> 【 ${groupName} 】グループの作成が完了しました🎉`);
+});
+
+// グループの入れ物の削除コマンド
+app.message(SubCommandPattern.disband, async ({ event, say }) => {
+  const _anyEvent = event as any;
+  const text = _anyEvent.text as string;
+  const user = _anyEvent.user as string;
+  const [_botName, _subcommand, groupName] = text.split(" ");
+
+  console.log("[INFO] Execute disband command:", _anyEvent.text);
+  const groupsRef = collection(db, "groups");
+
+  const q = query(
+    groupsRef,
+    where("groupName", "==", groupName),
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  const result: string[] = [];
+  const disbandTarget: DocumentData = [];
+  querySnapshot.forEach((doc) => {
+    const groupDoc = doc.data();
+    result.push(groupDoc.groupName);
+    disbandTarget.push(groupDoc);
+  });
+
+  if (result.length === 0) {
+    console.info(`[INFO] The specified group name does not found.`);
+    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
+    return;
+  }
+
+  await deleteDoc(disbandTarget[0]);
+  console.log(
+    "[INFO] Disband Group Id: ",
+    disbandTarget[0].id,
+    "/ Disband Group Name: ",
+    groupName,
+  );
+
+  await say(`<@${user}> 【 ${groupName} 】グループを解散しました👣`);
 });
 
 // グループにユーザーを追加するコマンド
@@ -118,5 +168,5 @@ app.error(async (error) => {
   return await void 0; // 型情報合わせのためのPromise<void>
 });
 
-await app.start({ port: 3002 });
+await app.start({ port: 9000 });
 console.log("🦕 ⚡️");
