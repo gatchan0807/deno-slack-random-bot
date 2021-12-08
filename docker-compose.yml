@@ -10,6 +10,7 @@ services:
       FIREBASE_CONFIG: ${FIREBASE_CONFIG}
       SLACK_BOT_TOKEN: ${SLACK_BOT_TOKEN}
       SLACK_SIGNING_SECRET: ${SLACK_SIGNING_SECRET}
+      PORT: 3000
     volumes:
       - ./src:/app/src
     command: deno run --no-check=remote --allow-read --allow-env --allow-net src/app.ts
