@@ -1,6 +1,6 @@
 import "dotenv/load.ts";
 import { App } from "slack_bolt/mod.ts";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 import { SubCommandPattern } from "./subcommands.ts";
 import { db } from "./firestore.ts";
@@ -19,14 +19,35 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   const [_botName, _subcommand, groupName] = text.split(" ");
 
   console.log("[INFO] Execute create command:", _anyEvent.text);
-  const docRef = await addDoc(collection(db, "groups"), {
+  const groupsRef = collection(db, "groups");
+
+  const q = query(
+    collection(db, "groups"),
+    where("groupName", "==", groupName),
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  const result: string[] = [];
+  querySnapshot.forEach((doc) => {
+    const groupDoc = doc.data();
+    result.push(groupDoc.groupName);
+  });
+
+  if (result.length !== 0) {
+    console.info(`[INFO] The specified already exists group name.`);
+    await say(`<@${user}> ごめんなさい！【${groupName}】はすでに存在します。別のグループ名を設定してください🙇`);
+    return;
+  }
+
+  const docRef = await addDoc(groupsRef, {
     created: timestamp,
     groupName,
   });
   console.log(
     "[INFO] Created Group Id: ",
     docRef.id,
-    "Created Group Name: ",
+    "/ Created Group Name: ",
     groupName,
   );
 
@@ -87,5 +108,5 @@ app.error(async (error) => {
   return await void 0; // 型情報合わせのためのPromise<void>
 });
 
-await app.start({ port: 3000 });
+await app.start({ port: 3002 });
 console.log("🦕 ⚡️");
