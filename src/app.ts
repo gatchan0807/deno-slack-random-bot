@@ -69,35 +69,19 @@ app.message(SubCommandPattern.disband, async ({ event, say }) => {
   const [_botName, _subcommand, groupName] = text.split(" ");
 
   console.log("[INFO] Execute disband command:", _anyEvent.text);
-  const groupsRef = collection(db, "groups");
+  const docRef = doc(db, "groups", groupName);
+  const docSnap = await getDoc(docRef);
 
-  const q = query(
-    groupsRef,
-    where("groupName", "==", groupName),
-  );
-
-  const querySnapshot = await getDocs(q);
-
-  const result: string[] = [];
-  const disbandTarget: DocumentData = [];
-  querySnapshot.forEach((doc) => {
-    const groupDoc = doc.data();
-    result.push(groupDoc.groupName);
-    disbandTarget.push(groupDoc);
-  });
-
-  if (result.length === 0) {
+  if (!docSnap.exists()) {
     console.info(`[INFO] The specified group name does not found.`);
     await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
     return;
   }
 
-  await deleteDoc(disbandTarget[0]);
+  await deleteDoc(docRef);
   console.log(
-    "[INFO] Disband Group Id: ",
-    disbandTarget[0].id,
-    "/ Disband Group Name: ",
-    groupName,
+    "[INFO] Disband Group Name: ",
+    docSnap.id,
   );
 
   await say(`<@${user}> 【 ${groupName} 】グループを解散しました👣`);
