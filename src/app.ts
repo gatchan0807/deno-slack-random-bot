@@ -241,16 +241,31 @@ app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand, groupName] = text.split(" ");
 
-  const result = ["username1", "username2", "username3", "username4"].sort(() =>
-    Math.random() - 0.5
+  console.log("[INFO] Execute random sort command:", _anyEvent.text);
+  const docRef = doc(db, "groups", groupName);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    console.info(`[INFO] The specified group name does not found.`);
+    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
+    return;
+  }
+
+  const raw: string[] = [];
+  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  groupSnaps.forEach((doc) => {
+    const tmp = doc.data();
+    raw.push(tmp.userName);
+  });
+
+  const result = raw.sort(() => Math.random() - 0.5).map((value, index) =>
+    `${index + 1}. ${value}`
   )
-    .map((value, index) => `${index + 1}. ${value}`)
     .join(
       "\n~~~~~~~~~~~~~~~~~~~\n",
     );
 
-  console.log("[INFO] Random sort: ", _anyEvent.text);
-  await say(`<@${user}> ${groupName}グループのメンバーをランダムに並べ替えました！
+  await say(`<@${user}> "${groupName}"グループのメンバーをランダムに並べ替えました！🎲
   ========================================================================
 ${result}`);
 });
