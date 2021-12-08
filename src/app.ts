@@ -1,5 +1,6 @@
-import "dotenv/load.ts";
-import { App } from "slack_bolt/mod.ts";
+import "https://deno.land/x/dotenv@v2.0.0/load.ts";
+
+import { App } from "./deps.ts";
 import {
   addDoc,
   collection,
@@ -8,7 +9,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
-} from "firebase/firestore";
+} from "./deps.ts";
 
 import { SubCommandPattern } from "./subcommands.ts";
 import { db } from "./firestore.ts";

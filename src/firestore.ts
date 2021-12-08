@@ -1,5 +1,4 @@
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeApp } from "./deps.ts";
 
 const firebaseConfig = JSON.parse(Deno.env.get("FIREBASE_CONFIG") ?? "");
 const firebaseApp = initializeApp(firebaseConfig);
