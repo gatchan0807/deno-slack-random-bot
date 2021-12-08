@@ -10,6 +10,15 @@ const app = new App({
   signingSecret: Deno.env.get("SLACK_SIGNING_SECRET"),
 });
 
+app.message(SubCommandPattern.ping, async ({ event, say }) => {
+  const _anyEvent = event as any;
+  const text = _anyEvent.text as string;
+  const user = _anyEvent.user as string;
+  const [_botName, _subcommand] = text.split(" ");
+
+  await say(`<@${user}> Pong.🏓 / ${text}`);
+});
+
 // グループの入れ物の作成コマンド
 app.message(SubCommandPattern.create, async ({ event, say }) => {
   const _anyEvent = event as any;
