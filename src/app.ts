@@ -1,12 +1,13 @@
 import "dotenv/load.ts";
 import { App } from "slack_bolt/mod.ts";
 import {
-  addDoc,
   collection,
   deleteDoc,
+  doc,
   DocumentData,
-  getDocs,
+  getDoc,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 
@@ -37,35 +38,23 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   const [_botName, _subcommand, groupName] = text.split(" ");
 
   console.log("[INFO] Execute create command:", _anyEvent.text);
-  const groupsRef = collection(db, "groups");
 
-  const q = query(
-    groupsRef,
-    where("groupName", "==", groupName),
-  );
+  const docRef = doc(db, "groups", groupName);
+  const docSnap = await getDoc(docRef);
 
-  const querySnapshot = await getDocs(q);
-
-  const result: string[] = [];
-  querySnapshot.forEach((doc) => {
-    const groupDoc = doc.data();
-    result.push(groupDoc.groupName);
-  });
-
-  if (result.length !== 0) {
+  if (docSnap.exists()) {
     console.info(`[INFO] The specified group name already exists.`);
     await say(`<@${user}> ごめんなさい！【${groupName}】はすでに存在します。別のグループ名を設定してください🙇`);
     return;
   }
 
-  const docRef = await addDoc(groupsRef, {
+  await setDoc(doc(db, "groups", groupName), {
     created: timestamp,
     groupName,
-  });
+  }, { merge: true });
+
   console.log(
-    "[INFO] Created Group Id: ",
-    docRef.id,
-    "/ Created Group Name: ",
+    "[INFO] Created Group Name: ",
     groupName,
   );
 
