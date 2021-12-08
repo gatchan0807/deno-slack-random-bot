@@ -16,6 +16,7 @@ app.message(SubCommandPattern.ping, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand] = text.split(" ");
 
+  console.log("[INFO] Execute ping command:", _anyEvent.text);
   await say(`<@${user}> Pong.🏓 / ${text}`);
 });
 
