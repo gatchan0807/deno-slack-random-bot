@@ -29,6 +29,8 @@ RUN echo $FIREBASE_CONFIG
 RUN echo $SLACK_BOT_TOKEN
 RUN echo $SLACK_SIGNING_SECRET
 
+RUN deno cache --no-check=remote /app/app.ts
+
 CMD ["deno", "run", "--no-check=remote", "--allow-read", "--allow-env", "--allow-net", "/app/app.ts"]
 
 # [Optional] Uncomment this section to install additional OS packages.
