@@ -2,6 +2,10 @@
 ARG VARIANT=bullseye
 FROM --platform=linux/amd64 mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
+ARG FIREBASE_CONFIG
+ARG SLACK_BOT_TOKEN
+ARG SLACK_SIGNING_SECRET
+
 ENV PORT=3000
 ENV DENO_INSTALL=/deno
 ENV APP_ROOT /app/
