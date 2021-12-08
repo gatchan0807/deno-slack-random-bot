@@ -1,14 +1,12 @@
 import "dotenv/load.ts";
 import { App } from "slack_bolt/mod.ts";
 import {
+  addDoc,
   collection,
   deleteDoc,
   doc,
-  DocumentData,
   getDoc,
-  query,
   setDoc,
-  where,
 } from "firebase/firestore";
 
 import { SubCommandPattern } from "./subcommands.ts";
@@ -92,9 +90,26 @@ app.message(SubCommandPattern.add, async ({ event, say }) => {
   const _anyEvent = event as any;
   const text = _anyEvent.text as string;
   const user = _anyEvent.user as string;
+  const timestamp = _anyEvent.ts as string;
   const [_botName, _subcommand, groupName, targetUserName] = text.split(" ");
 
-  console.log("[INFO] Add: ", _anyEvent.text);
+  console.log("[INFO] Execute add command:", _anyEvent.text);
+  const docRef = doc(db, "groups", groupName);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    console.info(`[INFO] The specified group name does not found.`);
+    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
+    return;
+  }
+
+  const groupRef = doc(collection(db, "groups"), groupName);
+  const usersRef = collection(groupRef, "users");
+  await addDoc(usersRef, {
+    userName: targetUserName,
+    timestamp: timestamp,
+  });
+
   await say(
     `<@${user}> "${groupName}"グループに【${targetUserName}】を追加しました！ Welcome.👏👏👏`,
   );
@@ -141,5 +156,5 @@ app.error(async (error) => {
   return await void 0; // 型情報合わせのためのPromise<void>
 });
 
-await app.start({ port: 9000 });
+await app.start({ port: 4040 });
 console.log("🦕 ⚡️");
