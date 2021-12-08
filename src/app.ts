@@ -1,7 +1,9 @@
 import "dotenv/load.ts";
 import { App } from "slack_bolt/mod.ts";
+import { addDoc, collection } from "firebase/firestore";
 
 import { SubCommandPattern } from "./subcommands.ts";
+import { db } from "./firestore.ts";
 
 const app = new App({
   token: Deno.env.get("SLACK_BOT_TOKEN"),
@@ -13,9 +15,20 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   const _anyEvent = event as any;
   const text = _anyEvent.text as string;
   const user = _anyEvent.user as string;
+  const timestamp = _anyEvent.ts as string;
   const [_botName, _subcommand, groupName] = text.split(" ");
 
-  console.log("[INFO] Create: ", _anyEvent.text);
+  console.log("[INFO] Execute create command:", _anyEvent.text);
+  const docRef = await addDoc(collection(db, "groups"), {
+    created: timestamp,
+    groupName,
+  });
+  console.log(
+    "[INFO] Created Group Id: ",
+    docRef.id,
+    "Created Group Name: ",
+    groupName,
+  );
 
   await say(`<@${user}> 【 ${groupName} 】グループの作成が完了しました🎉`);
 });
@@ -74,5 +87,5 @@ app.error(async (error) => {
   return await void 0; // 型情報合わせのためのPromise<void>
 });
 
-await app.start({ port: 3001 });
+await app.start({ port: 3000 });
 console.log("🦕 ⚡️");
