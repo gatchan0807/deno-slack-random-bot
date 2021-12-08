@@ -169,6 +169,42 @@ ${userNames}
   );
 });
 
+// グループ内のユーザーリストを表示するコマンド
+app.message(SubCommandPattern.list, async ({ event, say }) => {
+  const _anyEvent = event as any;
+  const text = _anyEvent.text as string;
+  const user = _anyEvent.user as string;
+  const [_botName, _subcommand, groupName] = text.split(" ");
+
+  console.log("[INFO] Execute list command:", _anyEvent.text);
+  const docRef = doc(db, "groups", groupName);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    console.info(`[INFO] The specified group name does not found.`);
+    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
+    return;
+  }
+
+  const raw: string[] = [];
+  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  groupSnaps.forEach((doc) => {
+    const tmp = doc.data();
+    raw.push(tmp.userName);
+  });
+
+  const result = raw.map((value, index) => `${index + 1}. ${value}`)
+    .join(
+      "\n~~~~~~~~~~~~~~~~~~~\n",
+    );
+
+  await say(
+    `<@${user}> 現在登録されている"${groupName}"グループのユーザーリストです！
+  ========================================================================
+${result}`,
+  );
+});
+
 // グループ内のユーザーリストをランダムに並び替えるコマンド
 app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
   const _anyEvent = event as any;

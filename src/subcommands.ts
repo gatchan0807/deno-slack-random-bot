@@ -5,6 +5,7 @@ export const SubCommandPattern = {
   add: new RegExp(`^\<\@${botName}\> add.*`),
   delete: new RegExp(`^\<\@${botName}\> (delete|remove).*`),
   create: new RegExp(`^\<\@${botName}\> create.*`),
+  list: new RegExp(`^\<\@${botName}\> list.*`),
   disband: new RegExp(
     `^\<\@${botName}\> (disband|delete-group|remove-group).*`,
   ),
