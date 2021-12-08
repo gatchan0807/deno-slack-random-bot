@@ -12,6 +12,7 @@ import {
 import { SubCommandPattern } from "./subcommands.ts";
 import { db } from "./firestore.ts";
 
+const port = Deno.env.get("SLACK_BOT_TOKEN")
 const app = new App({
   token: Deno.env.get("SLACK_BOT_TOKEN"),
   signingSecret: Deno.env.get("SLACK_SIGNING_SECRET"),
@@ -275,5 +276,5 @@ app.error(async (error) => {
   return await void 0; // 型情報合わせのためのPromise<void>
 });
 
-await app.start({ port: 3000 });
+await app.start({ port: port });
 console.log("🦕 ⚡️");

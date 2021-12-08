@@ -6,15 +6,18 @@ ENV PORT=3000
 ENV DENO_INSTALL=/deno
 ENV APP_ROOT /app/
 WORKDIR $APP_ROOT
+
 RUN mkdir -p /deno \
     mkdir -p /app \
     && curl -fsSL https://deno.land/x/install/install.sh | sh \
     && chown -R vscode /deno
 
+COPY ./src /app
+
 ENV PATH=${DENO_INSTALL}/bin:${PATH} \
     DENO_DIR=${DENO_INSTALL}/.cache/deno
 
-CMD ["deno", "run", "--no-check=remote", "--allow-read", "--allow-env", "--allow-net", "src/app.ts"]
+CMD ["deno", "run", "--no-check=remote", "--allow-read", "--allow-env", "--allow-net", "/app/app.ts"]
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
