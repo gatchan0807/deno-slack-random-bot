@@ -6,6 +6,7 @@ import {
   deleteDoc,
   doc,
   getDoc,
+  getDocs,
   setDoc,
 } from "firebase/firestore";
 
@@ -122,7 +123,46 @@ app.message(SubCommandPattern.delete, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand, groupName, targetUserName] = text.split(" ");
 
-  console.log("[INFO] Delete: ", _anyEvent.text);
+  console.log("[INFO] Execute delete command:", _anyEvent.text);
+  const docRef = doc(db, "groups", groupName);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) {
+    console.info(`[INFO] The specified group name does not found.`);
+    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
+    return;
+  }
+
+  const result: string[] = [];
+  const rawUserNames: string[] = [];
+  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  groupSnaps.forEach((doc) => {
+    const tmp = doc.data();
+    rawUserNames.push(tmp.userName);
+    if (tmp.userName === targetUserName) {
+      result.push(doc.id);
+    }
+  });
+
+  if (result.length === 0) {
+    console.info(`[INFO] The specified group name does not found.`);
+
+    const userNames = rawUserNames.map((value, index) =>
+      `${index + 1}. ${value}`
+    )
+      .join(
+        "\n~~~~~~~~~~~~~~~~~~~\n",
+      );
+    await say(
+      `<@${user}> 【${groupName}】グループ内に"${targetUserName}"の情報は見つかりませんでした！下記のリストから指定してください🔍
+========================================================================
+${userNames}
+`,
+    );
+    return;
+  }
+
+  await deleteDoc(doc(db, "groups", groupName, "users", result[0]));
 
   await say(
     `<@${user}> "${groupName}"グループから【${targetUserName}】を削除しました。 See you soon.👋`,
