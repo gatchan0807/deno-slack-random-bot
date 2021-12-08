@@ -25,6 +25,10 @@ COPY ./src /app
 ENV PATH=${DENO_INSTALL}/bin:${PATH} \
     DENO_DIR=${DENO_INSTALL}/.cache/deno
 
+RUN echo $FIREBASE_CONFIG
+RUN echo $SLACK_BOT_TOKEN
+RUN echo $SLACK_SIGNING_SECRET
+
 CMD ["deno", "run", "--no-check=remote", "--allow-read", "--allow-env", "--allow-net", "/app/app.ts"]
 
 # [Optional] Uncomment this section to install additional OS packages.
