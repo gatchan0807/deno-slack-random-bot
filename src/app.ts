@@ -104,6 +104,35 @@ app.message(SubCommandPattern.add, async ({ event, say }) => {
     return;
   }
 
+  const result: string[] = [];
+  const rawUserNames: string[] = [];
+  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  groupSnaps.forEach((doc) => {
+    const tmp = doc.data();
+    rawUserNames.push(tmp.userName);
+    if (tmp.userName === targetUserName) {
+      result.push(doc.id);
+    }
+  });
+
+  if (result.length !== 0) {
+    console.info(`[INFO] The specified user name is a duplicate.`);
+
+    const userNames = rawUserNames.map((value, index) =>
+      `${index + 1}. ${value}`
+    )
+      .join(
+        "\n~~~~~~~~~~~~~~~~~~~\n",
+      );
+    await say(
+      `<@${user}> 【${groupName}】グループ内に"${targetUserName}"の情報がすでに登録されています！詳しくは下記のリストを確認してください🔍
+========================================================================
+${userNames}
+`,
+    );
+    return;
+  }
+
   const groupRef = doc(collection(db, "groups"), groupName);
   const usersRef = collection(groupRef, "users");
   await addDoc(usersRef, {
@@ -145,7 +174,7 @@ app.message(SubCommandPattern.delete, async ({ event, say }) => {
   });
 
   if (result.length === 0) {
-    console.info(`[INFO] The specified group name does not found.`);
+    console.info(`[INFO] The specified user name does not found.`);
 
     const userNames = rawUserNames.map((value, index) =>
       `${index + 1}. ${value}`
