@@ -9,10 +9,10 @@ import {
   setDoc,
 } from "./deps.ts";
 
-import { SubCommandPattern } from "./subcommands.ts";
+import { helpMessage, SubCommandPattern } from "./subcommands.ts";
 import { db } from "./firestore.ts";
 
-const port = Deno.env.get("PORT") ?? 3000
+const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
   token: Deno.env.get("SLACK_BOT_TOKEN"),
   signingSecret: Deno.env.get("SLACK_SIGNING_SECRET"),
@@ -26,6 +26,16 @@ app.message(SubCommandPattern.ping, async ({ event, say }) => {
 
   console.log("[INFO] Execute ping command:", _anyEvent.text);
   await say(`<@${user}> Pong.🏓 / ${text}`);
+});
+
+app.message(SubCommandPattern.help, async ({ event, say }) => {
+  const _anyEvent = event as any;
+  const text = _anyEvent.text as string;
+  const user = _anyEvent.user as string;
+  const [_botName, _subcommand] = text.split(" ");
+
+  console.log("[INFO] Execute ping command:", _anyEvent.text);
+  await say(`<@${user}> ${helpMessage}`);
 });
 
 // グループの入れ物の作成コマンド
@@ -278,4 +288,3 @@ app.error(async (error) => {
 
 await app.start({ port: parseInt(port) });
 console.log(`🦕 ⚡️ on ${parseInt(port)}`);
-
