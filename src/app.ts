@@ -18,6 +18,13 @@ const app = new App({
   signingSecret: Deno.env.get("SLACK_SIGNING_SECRET"),
 });
 
+console.log(
+  Deno.env.get("SLACK_BOT_TOKEN"),
+  Deno.env.get("SLACK_SIGNING_SECRET"),
+  typeof Deno.env.get("SLACK_BOT_TOKEN"),
+  typeof Deno.env.get("SLACK_SIGNING_SECRET"),
+);
+
 app.message(SubCommandPattern.ping, async ({ event, say }) => {
   const _anyEvent = event as any;
   const text = _anyEvent.text as string;
