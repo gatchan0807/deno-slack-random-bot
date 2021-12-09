@@ -277,4 +277,5 @@ app.error(async (error) => {
 });
 
 await app.start({ port: parseInt(port) });
-console.log("🦕 ⚡️");
+console.log(`🦕 ⚡️ on ${parseInt(port)}`);
+
