@@ -24,7 +24,7 @@ app.message(SubCommandPattern.ping, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand] = text.split(" ");
 
-  console.log("[INFO] Execute ping command:", _anyEvent.text);
+  console.info("[INFO] Execute ping command:", _anyEvent.text);
   await say(`<@${user}> Pong.🏓 / ${text}`);
 });
 
@@ -34,7 +34,7 @@ app.message(SubCommandPattern.help, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand] = text.split(" ");
 
-  console.log("[INFO] Execute ping command:", _anyEvent.text);
+  console.info("[INFO] Execute ping command:", _anyEvent.text);
   await say(`<@${user}> ${helpMessage}`);
 });
 
@@ -46,7 +46,7 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   const timestamp = _anyEvent.ts as string;
   const [_botName, _subcommand, groupName] = text.split(" ");
 
-  console.log("[INFO] Execute create command:", _anyEvent.text);
+  console.info("[INFO] Execute create command:", _anyEvent.text);
 
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
@@ -62,7 +62,7 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
     groupName,
   }, { merge: true });
 
-  console.log(
+  console.info(
     "[INFO] Created Group Name: ",
     groupName,
   );
@@ -77,7 +77,7 @@ app.message(SubCommandPattern.disband, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand, groupName] = text.split(" ");
 
-  console.log("[INFO] Execute disband command:", _anyEvent.text);
+  console.info("[INFO] Execute disband command:", _anyEvent.text);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -88,7 +88,7 @@ app.message(SubCommandPattern.disband, async ({ event, say }) => {
   }
 
   await deleteDoc(docRef);
-  console.log(
+  console.info(
     "[INFO] Disband Group Name: ",
     docSnap.id,
   );
@@ -104,7 +104,7 @@ app.message(SubCommandPattern.add, async ({ event, say }) => {
   const timestamp = _anyEvent.ts as string;
   const [_botName, _subcommand, groupName, targetUserName] = text.split(" ");
 
-  console.log("[INFO] Execute add command:", _anyEvent.text);
+  console.info("[INFO] Execute add command:", _anyEvent.text);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -162,7 +162,7 @@ app.message(SubCommandPattern.delete, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand, groupName, targetUserName] = text.split(" ");
 
-  console.log("[INFO] Execute delete command:", _anyEvent.text);
+  console.info("[INFO] Execute delete command:", _anyEvent.text);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -215,7 +215,7 @@ app.message(SubCommandPattern.list, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand, groupName] = text.split(" ");
 
-  console.log("[INFO] Execute list command:", _anyEvent.text);
+  console.info("[INFO] Execute list command:", _anyEvent.text);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -251,7 +251,7 @@ app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
   const user = _anyEvent.user as string;
   const [_botName, _subcommand, groupName] = text.split(" ");
 
-  console.log("[INFO] Execute random sort command:", _anyEvent.text);
+  console.info("[INFO] Execute random sort command:", _anyEvent.text);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -287,4 +287,4 @@ app.error(async (error) => {
 });
 
 await app.start({ port: parseInt(port) });
-console.log(`🦕 ⚡️ on ${parseInt(port)}`);
+console.info(`🦕 ⚡️ on ${parseInt(port)}`);
