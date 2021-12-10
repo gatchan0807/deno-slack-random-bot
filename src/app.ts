@@ -10,6 +10,7 @@ import { deleteCommand } from "./command/delete.ts";
 import { list } from "./command/list.ts";
 import { randomSort } from "./command/random-sort.ts";
 import { pick } from "./command/pick.ts";
+import { separate } from "./command/separate.ts";
 
 const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
@@ -110,6 +111,17 @@ app.message(SubCommandPattern.pick, async ({ event, say }) => {
 
   console.info("[INFO] Execute pick command:", rawText);
   const resultMessage = pick({ groupName, pickCount });
+
+  await say(`<@${user}> ${resultMessage}`);
+});
+
+// グループ内のメンバーを指定の人数ごとにチーム分けするコマンド
+app.message(SubCommandPattern.separate, async ({ event, say }) => {
+  const { command, rawText, user } = formatMessage(event);
+  const [groupName, divideCount, mergeOption] = command.args;
+
+  console.info("[INFO] Execute pick command:", rawText);
+  const resultMessage = separate({ groupName, divideCount, mergeOption });
 
   await say(`<@${user}> ${resultMessage}`);
 });
