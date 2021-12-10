@@ -27,14 +27,24 @@ export const randomSort = async (
     raw.push(tmp.userName);
   });
 
-  const result = raw.sort(() => Math.random() - 0.5).map((value, index) =>
-    `${index + 1}. ${value}`
-  )
-    .join(
-      "\n~~~~~~~~~~~~~~~~~~~\n",
-    );
+  const result = shuffle(raw)
+    .map((value, index) => `${index + 1}. ${value}`)
+    .join("\n~~~~~~~~~~~~~~~~~~~\n");
 
   return `"${groupName}"グループのメンバーをランダムに並べ替えました！🎲
 ========================================================================
 ${result}`;
+};
+
+const shuffle = (array: string[]) => {
+  const copyArray = array.slice();
+  let m = copyArray.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = copyArray[m];
+    copyArray[m] = copyArray[i];
+    copyArray[i] = t;
+  }
+
+  return copyArray;
 };
