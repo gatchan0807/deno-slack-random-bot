@@ -25,29 +25,31 @@ export const deleteCommand = async (
   }
 
   const result: string[] = [];
-  const rawUserNames: string[] = [];
-  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  const rawMemberNames: string[] = [];
+  const groupSnaps = await getDocs(
+    collection(db, `groups/${groupName}/members`),
+  );
   groupSnaps.forEach((doc) => {
     const tmp = doc.data();
-    rawUserNames.push(tmp.userName);
-    if (tmp.userName === targetMemberName) {
+    rawMemberNames.push(tmp.memberName);
+    if (tmp.memberName === targetMemberName) {
       result.push(doc.id);
     }
   });
 
   if (result.length === 0) {
-    console.info(`[INFO] The specified user name does not found.`);
-    const userNames = rawUserNames.map((value, index) =>
+    console.info(`[INFO] The specified member name does not found.`);
+    const memberNames = rawMemberNames.map((value, index) =>
       `${index + 1}. ${value}`
     ).join("\n~~~~~~~~~~~~~~~~~~~\n");
 
     return `【${groupName}】グループ内に"${targetMemberName}"の情報は見つかりませんでした！下記のリストから指定してください🔍
 ========================================================================
-${userNames}
+${memberNames}
      `;
   }
 
-  await deleteDoc(doc(db, "groups", groupName, "users", result[0]));
+  await deleteDoc(doc(db, "groups", groupName, "members", result[0]));
 
   return `"${groupName}"グループから【${targetMemberName}】を削除しました。 See you soon.👋`;
 };

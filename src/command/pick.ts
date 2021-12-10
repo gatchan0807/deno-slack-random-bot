@@ -26,10 +26,12 @@ export const pick = async (
   }
 
   const raw: string[] = [];
-  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  const groupSnaps = await getDocs(
+    collection(db, `groups/${groupName}/members`),
+  );
   groupSnaps.forEach((doc) => {
     const tmp = doc.data();
-    raw.push(tmp.userName);
+    raw.push(tmp.memberName);
   });
 
   const count = isNaN(parseInt(pickCount)) ? parseInt(pickCount) : 1;

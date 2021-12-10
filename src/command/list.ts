@@ -21,10 +21,12 @@ export const list = async (
   }
 
   const raw: string[] = [];
-  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
+  const groupSnaps = await getDocs(
+    collection(db, `groups/${groupName}/members`),
+  );
   groupSnaps.forEach((doc) => {
     const tmp = doc.data();
-    raw.push(tmp.userName);
+    raw.push(tmp.memberName);
   });
 
   const result = raw.map((value, index) => `${index + 1}. ${value}`)
