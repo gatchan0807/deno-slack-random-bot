@@ -14,7 +14,7 @@ export const pick = async (
     return `指定のグループ名が受け取れませんでした🤔`;
   }
   if (!pickCount) {
-    return `指定のグループ名が受け取れませんでした🤔`;
+    return `指定のピックアップ人数が受け取れませんでした🤔`;
   }
 
   const docRef = doc(db, "groups", groupName);
