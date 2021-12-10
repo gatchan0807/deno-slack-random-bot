@@ -37,7 +37,7 @@ app.message(SubCommandPattern.help, async ({ event, say }) => {
 app.message(SubCommandPattern.create, async ({ event, say }) => {
   const { command, forceTypedEvent, rawMessage, user } = formatMessage(event);
   const timestamp = forceTypedEvent.ts;
-  const [_botName, _subcommand, groupName] = command;
+  const [groupName] = command.args;
 
   console.info("[INFO] Execute create command:", rawMessage);
 
@@ -66,7 +66,7 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
 // グループの入れ物の削除コマンド
 app.message(SubCommandPattern.disband, async ({ event, say }) => {
   const { command, rawMessage, user } = formatMessage(event);
-  const [_botName, _subcommand, groupName] = command;
+  const [groupName] = command.args;
 
   console.info("[INFO] Execute disband command:", rawMessage);
   const docRef = doc(db, "groups", groupName);
@@ -91,7 +91,7 @@ app.message(SubCommandPattern.disband, async ({ event, say }) => {
 app.message(SubCommandPattern.add, async ({ event, say }) => {
   const { command, forceTypedEvent, rawMessage, user } = formatMessage(event);
   const timestamp = forceTypedEvent.ts;
-  const [_botName, _subcommand, groupName, targetUserName] = command;
+  const [groupName, targetUserName] = command.args;
 
   console.info("[INFO] Execute add command:", rawMessage);
   const docRef = doc(db, "groups", groupName);
@@ -147,7 +147,7 @@ ${userNames}
 // グループからユーザーを削除するコマンド
 app.message(SubCommandPattern.delete, async ({ event, say }) => {
   const { command, rawMessage, user } = formatMessage(event);
-  const [_botName, _subcommand, groupName, targetUserName] = command;
+  const [groupName, targetUserName] = command.args;
 
   console.info("[INFO] Execute delete command:", rawMessage);
   const docRef = doc(db, "groups", groupName);
@@ -198,7 +198,7 @@ ${userNames}
 // グループ内のユーザーリストを表示するコマンド
 app.message(SubCommandPattern.list, async ({ event, say }) => {
   const { command, rawMessage, user } = formatMessage(event);
-  const [_botName, _subcommand, groupName] = command;
+  const [groupName] = command.args;
 
   console.info("[INFO] Execute list command:", rawMessage);
   const docRef = doc(db, "groups", groupName);
@@ -232,7 +232,7 @@ ${result}`,
 // グループ内のユーザーリストをランダムに並び替えるコマンド
 app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
   const { command, rawMessage, user } = formatMessage(event);
-  const [_botName, _subcommand, groupName] = command;
+  const [groupName] = command.args;
 
   console.info("[INFO] Execute random sort command:", rawMessage);
   const docRef = doc(db, "groups", groupName);

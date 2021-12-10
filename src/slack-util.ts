@@ -9,10 +9,26 @@ export const formatMessage = (
   const forceTypedEvent = event as GenericMessageEvent;
   const text = forceTypedEvent.text;
   const user = forceTypedEvent.user;
+
+  const rawCommand = text?.split(" ") ?? [];
+
+  const [botname, subcommand, ...commandArgs] = rawCommand;
+  const command: BotCommand = {
+    botname: botname ?? null,
+    subcommand: subcommand ?? null,
+    args: commandArgs,
+  };
+
   return {
-    command: text ? text.split(" ") : [],
     rawMessage: text,
+    command,
     forceTypedEvent,
     user,
   };
+};
+
+export type BotCommand = {
+  botname: string | null;
+  subcommand: string | null;
+  args: string[];
 };
