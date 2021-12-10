@@ -1,7 +1,7 @@
 import { App } from "./deps.ts";
 
 import { helpMessage, SubCommandPattern } from "./subcommands.ts";
-import { formatMessage } from "./slack-util.ts";
+import { formatMessage } from "./utils.ts";
 
 import { create } from "./command/create.ts";
 import { disband } from "./command/disband.ts";

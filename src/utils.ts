@@ -32,3 +32,16 @@ export type BotCommand = {
   subcommand: string | null;
   args: Array<string | undefined>;
 };
+
+export const shuffle = (array: string[]) => {
+  const copyArray = array.slice();
+  let m = copyArray.length, t, i;
+  while (m) {
+    i = Math.floor(Math.random() * m--);
+    t = copyArray[m];
+    copyArray[m] = copyArray[i];
+    copyArray[i] = t;
+  }
+
+  return copyArray;
+};

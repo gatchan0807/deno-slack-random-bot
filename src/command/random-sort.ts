@@ -1,5 +1,6 @@
 import { collection, doc, getDoc, getDocs } from "../deps.ts";
 import { db } from "../firestore.ts";
+import { shuffle } from "../utils.ts";
 
 export type RandomSortCommandArgs = {
   groupName: string | undefined;
@@ -34,17 +35,4 @@ export const randomSort = async (
   return `"${groupName}"グループのメンバーをランダムに並べ替えました！🎲
 ========================================================================
 ${result}`;
-};
-
-const shuffle = (array: string[]) => {
-  const copyArray = array.slice();
-  let m = copyArray.length, t, i;
-  while (m) {
-    i = Math.floor(Math.random() * m--);
-    t = copyArray[m];
-    copyArray[m] = copyArray[i];
-    copyArray[i] = t;
-  }
-
-  return copyArray;
 };
