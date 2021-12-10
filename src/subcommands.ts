@@ -1,4 +1,4 @@
-const botName = "U02PXKJA27K";
+const botName = "botname";
 
 export const SubCommandPattern = {
   ping: new RegExp(`^\<\@${botName}\> ping.*`),
