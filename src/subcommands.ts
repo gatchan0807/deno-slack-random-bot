@@ -11,6 +11,7 @@ export const SubCommandPattern = {
     `^\<\@${botName}\> (disband|delete-group|remove-group).*`,
   ),
   randomSort: new RegExp(`^\<\@${botName}\> random\-sort.*`),
+  pick: new RegExp(`^\<\@${botName}\> pick.*`),
 };
 
 export const helpMessage = `使い方の説明ッ！
@@ -28,4 +29,5 @@ export const helpMessage = `使い方の説明ッ！
 @/random-bot (delete|remove) [group-name] [member-name] 👉 グループからメンバーの削除
 ~~~~~~~ シャッフル実行系 ~~~~~~~
 @/random-bot random-sort [group-name] 👉 グループ内のメンバー一覧をシャッフルして並び替え
+@/random-bot pick [group-name] [number] 👉 グループ内のメンバー一覧からランダムに指定の人数ピックアップ
 `;

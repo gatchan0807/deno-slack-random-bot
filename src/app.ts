@@ -9,6 +9,7 @@ import { add } from "./command/add.ts";
 import { deleteCommand } from "./command/delete.ts";
 import { list } from "./command/list.ts";
 import { randomSort } from "./command/random-sort.ts";
+import { pick } from "./command/pick.ts";
 
 const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
@@ -98,6 +99,17 @@ app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
 
   console.info("[INFO] Execute random sort command:", rawText);
   const resultMessage = randomSort({ groupName });
+
+  await say(`<@${user}> ${resultMessage}`);
+});
+
+// グループ内から任意の人数ピックアップしてくるコマンド
+app.message(SubCommandPattern.pick, async ({ event, say }) => {
+  const { command, rawText, user } = formatMessage(event);
+  const [groupName, pickCount] = command.args;
+
+  console.info("[INFO] Execute pick command:", rawText);
+  const resultMessage = pick({ groupName, pickCount });
 
   await say(`<@${user}> ${resultMessage}`);
 });
