@@ -24,7 +24,7 @@ ENV PATH=${DENO_INSTALL}/bin:${PATH} \
 
 ENV FIREBASE_CONFIG=$firebase_config \ 
     SLACK_BOT_TOKEN=$slack_bot_token \ 
-    SLACK_SIGNING_SECRET=$slack_siging_secret
+    SLACK_SIGNING_SECRET=$slack_signing_secret
 
 RUN echo $FIREBASE_CONFIG
 RUN echo $SLACK_BOT_TOKEN
