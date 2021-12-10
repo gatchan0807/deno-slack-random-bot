@@ -1,17 +1,11 @@
 import { App } from "./deps.ts";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-} from "./deps.ts";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs } from "./deps.ts";
 
 import { helpMessage, SubCommandPattern } from "./subcommands.ts";
 import { formatMessage } from "./slack-util.ts";
 import { db } from "./firestore.ts";
+
+import { create } from "./command/create.ts";
 
 const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
@@ -41,26 +35,9 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
 
   console.info("[INFO] Execute create command:", rawText);
 
-  const docRef = doc(db, "groups", groupName);
-  const docSnap = await getDoc(docRef);
+  const resultMessage = await create({ timestamp, groupName });
 
-  if (docSnap.exists()) {
-    console.info(`[INFO] The specified group name already exists.`);
-    await say(`<@${user}> ごめんなさい！【${groupName}】はすでに存在します。別のグループ名を設定してください🙇`);
-    return;
-  }
-
-  await setDoc(doc(db, "groups", groupName), {
-    created: timestamp,
-    groupName,
-  }, { merge: true });
-
-  console.info(
-    "[INFO] Created Group Name: ",
-    groupName,
-  );
-
-  await say(`<@${user}> 【 ${groupName} 】グループの作成が完了しました🎉`);
+  await say(`<@${user}> ${resultMessage}`);
 });
 
 // グループの入れ物の削除コマンド
