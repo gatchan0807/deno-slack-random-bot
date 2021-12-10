@@ -30,5 +30,5 @@ export const formatMessage = (
 export type BotCommand = {
   botname: string | null;
   subcommand: string | null;
-  args: string[];
+  args: Array<string | undefined>;
 };

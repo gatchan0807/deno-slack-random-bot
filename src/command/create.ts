@@ -2,13 +2,17 @@ import { doc, getDoc, setDoc } from "../deps.ts";
 import { db } from "../firestore.ts";
 
 export type CreateCommandArgs = {
-  groupName: string;
+  groupName: string | undefined;
   timestamp: string;
 };
 
 export const create = async (
   { groupName, timestamp }: CreateCommandArgs,
 ): Promise<string> => {
+  if (!groupName) {
+    return `指定のグループ名が受け取れませんでした🤔`;
+  }
+
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
