@@ -1,15 +1,14 @@
 import { App } from "./deps.ts";
-import { collection, doc, getDoc, getDocs } from "./deps.ts";
 
 import { helpMessage, SubCommandPattern } from "./subcommands.ts";
 import { formatMessage } from "./slack-util.ts";
-import { db } from "./firestore.ts";
 
 import { create } from "./command/create.ts";
 import { disband } from "./command/disband.ts";
 import { add } from "./command/add.ts";
 import { deleteCommand } from "./command/delete.ts";
 import { list } from "./command/list.ts";
+import { randomSort } from "./command/random-sort.ts";
 
 const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
@@ -17,6 +16,7 @@ const app = new App({
   signingSecret: Deno.env.get("SLACK_SIGNING_SECRET"),
 });
 
+// 動作確認コマンド
 app.message(SubCommandPattern.ping, async ({ event, say }) => {
   const { rawText, user } = formatMessage(event);
 
@@ -25,6 +25,7 @@ app.message(SubCommandPattern.ping, async ({ event, say }) => {
   await say(`<@${user}> Pong.🏓 / ${rawText}`);
 });
 
+// ヘルプ表示コマンド
 app.message(SubCommandPattern.help, async ({ event, say }) => {
   const { rawText, user } = formatMessage(event);
 
@@ -87,9 +88,7 @@ app.message(SubCommandPattern.list, async ({ event, say }) => {
   console.info("[INFO] Execute list command:", rawText);
   const resultMessage = list({ groupName });
 
-  await say(
-    `<@${user}> ${resultMessage}`,
-  );
+  await say(`<@${user}> ${resultMessage}`);
 });
 
 // グループ内のユーザーリストをランダムに並び替えるコマンド
@@ -98,32 +97,9 @@ app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
   const [groupName] = command.args;
 
   console.info("[INFO] Execute random sort command:", rawText);
-  const docRef = doc(db, "groups", groupName);
-  const docSnap = await getDoc(docRef);
+  const resultMessage = randomSort({ groupName });
 
-  if (!docSnap.exists()) {
-    console.info(`[INFO] The specified group name does not found.`);
-    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
-    return;
-  }
-
-  const raw: string[] = [];
-  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
-  groupSnaps.forEach((doc) => {
-    const tmp = doc.data();
-    raw.push(tmp.userName);
-  });
-
-  const result = raw.sort(() => Math.random() - 0.5).map((value, index) =>
-    `${index + 1}. ${value}`
-  )
-    .join(
-      "\n~~~~~~~~~~~~~~~~~~~\n",
-    );
-
-  await say(`<@${user}> "${groupName}"グループのメンバーをランダムに並べ替えました！🎲
-  ========================================================================
-${result}`);
+  await say(`<@${user}> ${resultMessage}`);
 });
 
 // Event Subscriptionsの項でRequest URLの設定が一向にVerifyしないので一旦エラーを握りつぶす
