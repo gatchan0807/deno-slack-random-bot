@@ -4,7 +4,7 @@ FROM --platform=linux/amd64 mcr.microsoft.com/vscode/devcontainers/base:0-${VARI
 
 ARG firebase_config
 ARG slack_bot_token
-ARG slack_siging_secret
+ARG slack_signing_secret
 
 ENV PORT=3000
 ENV DENO_INSTALL=/deno
