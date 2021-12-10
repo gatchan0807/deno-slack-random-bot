@@ -20,26 +20,26 @@ const app = new App({
 });
 
 app.message(SubCommandPattern.ping, async ({ event, say }) => {
-  const { rawMessage, user } = formatMessage(event);
+  const { rawText, user } = formatMessage(event);
 
-  console.info("[INFO] Execute ping command:", rawMessage);
-  await say(`<@${user}> Pong.🏓 / ${rawMessage}`);
+  console.info("[INFO] Execute ping command:", rawText);
+  await say(`<@${user}> Pong.🏓 / ${rawText}`);
 });
 
 app.message(SubCommandPattern.help, async ({ event, say }) => {
-  const { rawMessage, user } = formatMessage(event);
+  const { rawText, user } = formatMessage(event);
 
-  console.info("[INFO] Execute ping command:", rawMessage);
+  console.info("[INFO] Execute ping command:", rawText);
   await say(`<@${user}> ${helpMessage}`);
 });
 
 // グループの入れ物の作成コマンド
 app.message(SubCommandPattern.create, async ({ event, say }) => {
-  const { command, forceTypedEvent, rawMessage, user } = formatMessage(event);
+  const { command, forceTypedEvent, rawText, user } = formatMessage(event);
   const timestamp = forceTypedEvent.ts;
   const [groupName] = command.args;
 
-  console.info("[INFO] Execute create command:", rawMessage);
+  console.info("[INFO] Execute create command:", rawText);
 
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
@@ -65,10 +65,10 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
 
 // グループの入れ物の削除コマンド
 app.message(SubCommandPattern.disband, async ({ event, say }) => {
-  const { command, rawMessage, user } = formatMessage(event);
+  const { command, rawText, user } = formatMessage(event);
   const [groupName] = command.args;
 
-  console.info("[INFO] Execute disband command:", rawMessage);
+  console.info("[INFO] Execute disband command:", rawText);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -89,11 +89,11 @@ app.message(SubCommandPattern.disband, async ({ event, say }) => {
 
 // グループにユーザーを追加するコマンド
 app.message(SubCommandPattern.add, async ({ event, say }) => {
-  const { command, forceTypedEvent, rawMessage, user } = formatMessage(event);
+  const { command, forceTypedEvent, rawText, user } = formatMessage(event);
   const timestamp = forceTypedEvent.ts;
   const [groupName, targetUserName] = command.args;
 
-  console.info("[INFO] Execute add command:", rawMessage);
+  console.info("[INFO] Execute add command:", rawText);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -146,10 +146,10 @@ ${userNames}
 
 // グループからユーザーを削除するコマンド
 app.message(SubCommandPattern.delete, async ({ event, say }) => {
-  const { command, rawMessage, user } = formatMessage(event);
+  const { command, rawText, user } = formatMessage(event);
   const [groupName, targetUserName] = command.args;
 
-  console.info("[INFO] Execute delete command:", rawMessage);
+  console.info("[INFO] Execute delete command:", rawText);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -197,10 +197,10 @@ ${userNames}
 
 // グループ内のユーザーリストを表示するコマンド
 app.message(SubCommandPattern.list, async ({ event, say }) => {
-  const { command, rawMessage, user } = formatMessage(event);
+  const { command, rawText, user } = formatMessage(event);
   const [groupName] = command.args;
 
-  console.info("[INFO] Execute list command:", rawMessage);
+  console.info("[INFO] Execute list command:", rawText);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 
@@ -231,10 +231,10 @@ ${result}`,
 
 // グループ内のユーザーリストをランダムに並び替えるコマンド
 app.message(SubCommandPattern.randomSort, async ({ event, say }) => {
-  const { command, rawMessage, user } = formatMessage(event);
+  const { command, rawText, user } = formatMessage(event);
   const [groupName] = command.args;
 
-  console.info("[INFO] Execute random sort command:", rawMessage);
+  console.info("[INFO] Execute random sort command:", rawText);
   const docRef = doc(db, "groups", groupName);
   const docSnap = await getDoc(docRef);
 

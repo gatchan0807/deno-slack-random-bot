@@ -20,7 +20,7 @@ export const formatMessage = (
   };
 
   return {
-    rawMessage: text,
+    rawText: text,
     command,
     forceTypedEvent,
     user,
