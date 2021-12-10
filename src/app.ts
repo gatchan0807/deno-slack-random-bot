@@ -1,5 +1,5 @@
 import { App } from "./deps.ts";
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs } from "./deps.ts";
+import { collection, doc, getDoc, getDocs } from "./deps.ts";
 
 import { helpMessage, SubCommandPattern } from "./subcommands.ts";
 import { formatMessage } from "./slack-util.ts";
@@ -9,6 +9,7 @@ import { create } from "./command/create.ts";
 import { disband } from "./command/disband.ts";
 import { add } from "./command/add.ts";
 import { deleteCommand } from "./command/delete.ts";
+import { list } from "./command/list.ts";
 
 const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
@@ -84,31 +85,10 @@ app.message(SubCommandPattern.list, async ({ event, say }) => {
   const [groupName] = command.args;
 
   console.info("[INFO] Execute list command:", rawText);
-  const docRef = doc(db, "groups", groupName);
-  const docSnap = await getDoc(docRef);
-
-  if (!docSnap.exists()) {
-    console.info(`[INFO] The specified group name does not found.`);
-    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
-    return;
-  }
-
-  const raw: string[] = [];
-  const groupSnaps = await getDocs(collection(db, `groups/${groupName}/users`));
-  groupSnaps.forEach((doc) => {
-    const tmp = doc.data();
-    raw.push(tmp.userName);
-  });
-
-  const result = raw.map((value, index) => `${index + 1}. ${value}`)
-    .join(
-      "\n~~~~~~~~~~~~~~~~~~~\n",
-    );
+  const resultMessage = list({ groupName });
 
   await say(
-    `<@${user}> 現在登録されている"${groupName}"グループのユーザーリストです！
-  ========================================================================
-${result}`,
+    `<@${user}> ${resultMessage}`,
   );
 });
 
