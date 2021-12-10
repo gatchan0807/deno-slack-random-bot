@@ -18,6 +18,7 @@ app.message(SubCommandPattern.ping, async ({ event, say }) => {
   const { rawText, user } = formatMessage(event);
 
   console.info("[INFO] Execute ping command:", rawText);
+
   await say(`<@${user}> Pong.🏓 / ${rawText}`);
 });
 
@@ -25,6 +26,7 @@ app.message(SubCommandPattern.help, async ({ event, say }) => {
   const { rawText, user } = formatMessage(event);
 
   console.info("[INFO] Execute ping command:", rawText);
+
   await say(`<@${user}> ${helpMessage}`);
 });
 
@@ -35,7 +37,6 @@ app.message(SubCommandPattern.create, async ({ event, say }) => {
   const [groupName] = command.args;
 
   console.info("[INFO] Execute create command:", rawText);
-
   const resultMessage = await create({ timestamp, groupName });
 
   await say(`<@${user}> ${resultMessage}`);
