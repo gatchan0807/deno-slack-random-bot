@@ -6,6 +6,7 @@ import { formatMessage } from "./slack-util.ts";
 import { db } from "./firestore.ts";
 
 import { create } from "./command/create.ts";
+import { disband } from "./command/disband.ts";
 
 const port = Deno.env.get("PORT") ?? "3000";
 const app = new App({
@@ -46,22 +47,9 @@ app.message(SubCommandPattern.disband, async ({ event, say }) => {
   const [groupName] = command.args;
 
   console.info("[INFO] Execute disband command:", rawText);
-  const docRef = doc(db, "groups", groupName);
-  const docSnap = await getDoc(docRef);
+  const resultMessage = await disband({ groupName });
 
-  if (!docSnap.exists()) {
-    console.info(`[INFO] The specified group name does not found.`);
-    await say(`<@${user}> 【${groupName}】グループは登録リストに見つかりませんでした！`);
-    return;
-  }
-
-  await deleteDoc(docRef);
-  console.info(
-    "[INFO] Disband Group Name: ",
-    docSnap.id,
-  );
-
-  await say(`<@${user}> 【 ${groupName} 】グループを解散しました👣`);
+  await say(`<@${user}> ${resultMessage}`);
 });
 
 // グループにユーザーを追加するコマンド
