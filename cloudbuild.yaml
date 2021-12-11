@@ -1,15 +1,50 @@
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ["build", "-t", "${_GCR_HOSTNAME}/$PROJECT_ID/$COMMIT_SHA:$TAG_NAME",
-         "--build-arg",
-         "FIREBASE_CONFIG=${_FIREBASE_CONFIG}", 
-         "SLACK_BOT_TOKEN=${_SLACK_BOT_TOKEN}", 
-         "SLACK_SIGNING_SECRET=${_SLACK_SIGNING_SECRET}",
-         "."]
-
-- name: 'gcr.io/cloud-builders/docker'
-  args: ["push", "${_GCR_HOSTNAME}/$PROJECT_ID/$COMMIT_SHA:$TAG_NAME"]
-
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: gcloud
-  args: ["run", "deploy", "${_SERVICE_NAME}", "--image", "${_GCR_HOSTNAME}/$PROJECT_ID/$COMMIT_SHA:$TAG_NAME", "--region", "${_DEPLOY_REGION}"]
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--build-arg'
+      - 'firebase_config=${_FIREBASE_CONFIG}'
+      - '--build-arg'
+      - 'slack_bot_token=${_SLACK_BOT_TOKEN}'
+      - '--build-arg'
+      - 'slack_signing_secret=${_SLACK_SIGNING_SECRET}'
+      - .
+      - '-f'
+      - Dockerfile
+    id: Build
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    id: Push
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    args:
+      - run
+      - services
+      - update
+      - $_SERVICE_NAME
+      - '--platform=managed'
+      - '--image=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+      - >-
+        --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID,$_LABELS
+      - '--region=$_DEPLOY_REGION'
+      - '--quiet'
+    id: Deploy
+    entrypoint: gcloud
+images:
+  - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+options:
+  substitutionOption: ALLOW_LOOSE
+substitutions:
+  _SERVICE_NAME: deno-slack-random-bot
+  _DEPLOY_REGION: asia-northeast1
+  _GCR_HOSTNAME: asia.gcr.io
+  _LABELS: gcb-trigger-id=20475876-cddd-4add-a7fa-5d67fcf75e4f
+  _TRIGGER_ID: 20475876-cddd-4add-a7fa-5d67fcf75e4f
+  _PLATFORM: managed
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - deno-slack-random-bot
