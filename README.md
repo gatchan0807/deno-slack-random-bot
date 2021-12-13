@@ -21,7 +21,7 @@ BASE社のSlackワークスペースにて稼働させるために作成したSl
 ```
 
 2021年12月のアドベントカレンダー用の記事で詳細は紹介されている
-=> [Slack Bot開発編](https://devblog.thebase.in/entry/2021/12/04/110000) / [Deno基礎知識・環境構築編](https://devblog.thebase.in/entry/2021/12/12/170000)
+=> [Slack Bot開発編](https://devblog.thebase.in/entry/2021/12/12/170000) / [Deno基礎知識・環境構築編](https://devblog.thebase.in/entry/2021/12/04/110000)
 
 ## 利用技術
 
